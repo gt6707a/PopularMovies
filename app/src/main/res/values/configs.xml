@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="NUMBER_OF_COLUMNS">2</integer>
+    <string name="API_KEY">YOUR-API-KEY-HERE</string>
+    <!-- base uri can be abstracted if we need to build URIs in more dynamic way -->
+    <string name="MOST_POPULAR_MOVIES_URI">https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc</string>
+    <string name="TOP_RATED_MOVIES_URI">https://api.themoviedb.org/3/movie/top_rated</string>
+    <string name="POSTER_BASE_URI">http://image.tmdb.org/t/p/w500/</string>
+</resources>
