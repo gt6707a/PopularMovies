@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class MovieDbJsonUtils {
-    private static String VOTE_COUNT = "vote_count";
-    private static String ID = "id";
-    public static String VIDEO = "video";
-    private static String VOTE_AVERAGE = "vote_average";
-    private static String TITLE = "title";
-    private static String POSTER_PATH = "poster_path";
-    private static String OVERVIEW = "overview";
-    private static String RELEASE_DATE = "release_date";
+    private final static String VOTE_COUNT = "vote_count";
+    private final static String ID = "id";
+    private final static String VIDEO = "video";
+    private final static String VOTE_AVERAGE = "vote_average";
+    private final static String TITLE = "title";
+    private final static String POSTER_PATH = "poster_path";
+    private final static String OVERVIEW = "overview";
+    private final static String RELEASE_DATE = "release_date";
 
     public static List<Movie> toMovies(String json)
         throws JSONException {

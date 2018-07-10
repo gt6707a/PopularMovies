@@ -2,8 +2,10 @@ package com.android.gt6707a.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -14,7 +16,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.gt6707a.popularmovies.utilities.MovieDbJsonUtils;
+import com.android.gt6707a.popularmovies.utilities.NetworkUtils;
 
+import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -24,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar mLoadingIndicator;
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessage;
-    private MovieQueryTask.SortOption mCurrentSortOption;
+    private SortOption mCurrentSortOption;
 
 
     @Override
@@ -44,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setAdapter(mMovieAdapter);
         mRecyclerView.setHasFixedSize(true);
 
-        mCurrentSortOption = MovieQueryTask.SortOption.MostPopular;
+        mCurrentSortOption = SortOption.MostPopular;
         refreshData();
     }
 
@@ -71,9 +76,9 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int sortId = item.getItemId();
         if (sortId == R.id.sort_popular) {
-            mCurrentSortOption = MovieQueryTask.SortOption.MostPopular;
+            mCurrentSortOption = SortOption.MostPopular;
         } else if (sortId == R.id.sort_top_rated) {
-            mCurrentSortOption = MovieQueryTask.SortOption.TopRated;
+            mCurrentSortOption = SortOption.TopRated;
         }
 
         refreshData();
@@ -81,29 +86,58 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void refreshData() {
-        MovieQueryTask movieQueryTask = new MovieQueryTask(this) {
-            @Override
-            protected void onPreExecute() {
-                showLoading(true);
-            }
-
-            @Override
-            protected void onPostExecute(String response) {
-                if (!response.isEmpty()) {
-                    try {
-                        List<Movie> movies = MovieDbJsonUtils.toMovies(response);
-                        mMovieAdapter.updateMovies(movies);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    showLoading(false);
-                } else {
-                    showError();
-                }
-            }
-        };
-
+        MovieQueryTask movieQueryTask = new MovieQueryTask(this);
         movieQueryTask.execute(mCurrentSortOption);
+    }
+
+    private static class MovieQueryTask extends AsyncTask<SortOption, Void, String> {
+        private final WeakReference<MainActivity> mActivity;
+
+        public MovieQueryTask(@NonNull MainActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.get().showLoading(true);
+        }
+
+        @Override
+        protected String doInBackground(SortOption... sortOptions) {
+            return query(sortOptions[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            if (!response.isEmpty()) {
+                try {
+                    List<Movie> movies = MovieDbJsonUtils.toMovies(response);
+                    mActivity.get().mMovieAdapter.updateMovies(movies);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mActivity.get().showLoading(false);
+            } else {
+                mActivity.get().showError();
+            }
+        }
+
+        private String query(SortOption sortOption) {
+            String uri = sortOption == SortOption.MostPopular ?
+                    mActivity.get().getString(R.string.MOST_POPULAR_MOVIES_URI) :
+                    mActivity.get().getString(R.string.TOP_RATED_MOVIES_URI);
+
+            try {
+                URL url = NetworkUtils.getUrl(mActivity.get(), uri);
+                if (url != null) {
+                    return NetworkUtils.fetch(url);
+                }
+            } catch (Exception e) {
+                /* Server probably invalid */
+                e.printStackTrace();
+            }
+            return "";
+        }
     }
 
     private void showLoading(boolean isLoading) {
@@ -117,5 +151,10 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setVisibility(View.INVISIBLE);
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mErrorMessage.setVisibility(View.VISIBLE);
+    }
+
+    enum SortOption {
+        MostPopular,
+        TopRated
     }
 }

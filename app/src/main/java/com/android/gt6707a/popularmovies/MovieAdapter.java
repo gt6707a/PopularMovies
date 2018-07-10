@@ -33,7 +33,7 @@ import java.util.List;
  * from a {@link android.database.Cursor} to a {@link android.support.v7.widget.RecyclerView}.
  */
 class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-    private List<Movie> mMovies;
+    private final List<Movie> mMovies;
     private final Context mContext;
 
     final private MovieAdapterOnClickHandler mClickHandler;
@@ -84,15 +84,16 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
         mMovies = new ArrayList<>();
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.movie_list_item, viewGroup, false);
         view.setFocusable(true);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Movie movie = mMovies.get(position);
 
         Picasso.with(mContext).load(mContext.getString(R.string.POSTER_BASE_URI) + movie.getPosterPath()).into(holder.imageView);

@@ -20,7 +20,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.android.gt6707a.popularmovies.BuildConfig;
-import com.android.gt6707a.popularmovies.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +39,7 @@ public final class NetworkUtils {
 
     private static final String API_KEY_PARAM = "api_key";
 
-    public static URL getUrl(Context context, String queryUri) {
+    public static URL getUrl(String queryUri) {
         Uri uri = Uri.parse(queryUri).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.MovieDbApiKey)
                 .build();

@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Locale;
+
 public class DetailActivity extends AppCompatActivity {
 
     private TextView mTitleTextView;
@@ -40,7 +42,7 @@ public class DetailActivity extends AppCompatActivity {
     private void updateUI(Movie movie) {
         mTitleTextView.setText(movie.getTitle());
         mReleaseDateTextView.setText(movie.getReleaseYear());
-        mVoteAverageTextView.setText(String.format("%1$.1f/10", movie.getVoteAverage()));
+        mVoteAverageTextView.setText(String.format(Locale.getDefault(), "%1$.1f/10", movie.getVoteAverage()));
         mOverviewTextView.setText(movie.getOverview());
         Picasso.with(this).load(getString(R.string.POSTER_BASE_URI) + movie.getPosterPath())
                 .resize(500, 1000).centerInside().into(mPosterImageView);
