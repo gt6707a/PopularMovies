@@ -16,8 +16,6 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mVoteAverageTextView;
     private TextView mOverviewTextView;
 
-    private Movie mMovie;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,14 +31,18 @@ public class DetailActivity extends AppCompatActivity {
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra(Movie.class.getCanonicalName())) {
-                mMovie = (Movie) intentThatStartedThisActivity.getSerializableExtra(Movie.class.getCanonicalName());
-                mTitleTextView.setText(mMovie.getTitle());
-                mReleaseDateTextView.setText(mMovie.getReleaseYear());
-                mVoteAverageTextView.setText(String.format("%1$.1f/10", mMovie.getVoteAverage()));
-                mOverviewTextView.setText(mMovie.getOverview());
-                Picasso.with(this).load(getString(R.string.POSTER_BASE_URI) + mMovie.getPosterPath())
-                        .resize(500, 1000).centerInside().into(mPosterImageView);
+                Movie movie = (Movie) intentThatStartedThisActivity.getSerializableExtra(Movie.class.getCanonicalName());
+                updateUI(movie);
             }
         }
+    }
+
+    private void updateUI(Movie movie) {
+        mTitleTextView.setText(movie.getTitle());
+        mReleaseDateTextView.setText(movie.getReleaseYear());
+        mVoteAverageTextView.setText(String.format("%1$.1f/10", movie.getVoteAverage()));
+        mOverviewTextView.setText(movie.getOverview());
+        Picasso.with(this).load(getString(R.string.POSTER_BASE_URI) + movie.getPosterPath())
+                .resize(500, 1000).centerInside().into(mPosterImageView);
     }
 }
