@@ -13,13 +13,11 @@ android {
     buildTypes {
         debug {
             buildConfigField 'String', "MovieDbApiKey", moviedb_api_key
-            resValue 'string', "MovieDbApiKey", moviedb_api_key
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', "MovieDbApiKey", moviedb_api_key
-            resValue 'string', "MovieDbApiKey", moviedb_api_key
         }
     }
 }

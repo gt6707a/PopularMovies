@@ -1,9 +1,9 @@
-package com.android.gt6707a.popularmovies;
+package com.android.gt6707a.popularmovies.entities;
 
 import java.io.Serializable;
 
 public class Movie implements Serializable{
-    private long id;
+    private int id;
     private long voteCount;
     private boolean video;
     private String title;
@@ -12,10 +12,10 @@ public class Movie implements Serializable{
     private double voteAverage;
     private String releaseDate;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
-    public Movie setId(long id) {
+    public Movie setId(int id) {
         this.id = id;
         return this;
     }

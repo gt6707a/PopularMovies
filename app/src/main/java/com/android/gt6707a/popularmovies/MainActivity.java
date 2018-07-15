@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.gt6707a.popularmovies.entities.Movie;
 import com.android.gt6707a.popularmovies.utilities.MovieDbJsonUtils;
 import com.android.gt6707a.popularmovies.utilities.NetworkUtils;
 
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements
                     mActivity.get().getString(R.string.TOP_RATED_MOVIES_URI);
 
             try {
-                URL url = NetworkUtils.getUrl(mActivity.get(), uri);
+                URL url = NetworkUtils.getUrl(uri);
                 if (url != null) {
                     return NetworkUtils.fetch(url);
                 }

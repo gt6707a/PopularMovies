@@ -21,29 +21,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.android.gt6707a.popularmovies.entities.Movie;
-import com.squareup.picasso.Picasso;
+import com.android.gt6707a.popularmovies.entities.Trailer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link MovieAdapter} exposes a list of movies
- * from a {@link android.database.Cursor} to a {@link android.support.v7.widget.RecyclerView}.
+ * {@link TrailersAdapter} exposes a list of trailers
+ * to a {@link RecyclerView}.
  */
-class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-    private final List<Movie> mMovies;
+class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ViewHolder> {
+    private final List<Trailer> mTrailers;
     private final Context mContext;
 
-    final private MovieAdapterOnClickHandler mClickHandler;
+    final private TrailersAdapterOnClickHandler mClickHandler;
 
     /**
      * The interface that receives onClick messages.
      */
-    public interface MovieAdapterOnClickHandler {
-        void onClick(Movie movie);
+    public interface TrailersAdapterOnClickHandler {
+        void onClick(Trailer trailer);
     }
 
     /**
@@ -54,13 +53,11 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        final ImageView imageView;
+        final TextView mTrailerNameTextView;
 
         ViewHolder(View view) {
             super(view);
-
-            imageView = view.findViewById(R.id.image);
-
+            mTrailerNameTextView = view.findViewById(R.id.tv_trailer_name);
             view.setOnClickListener(this);
         }
 
@@ -74,41 +71,40 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            Movie movie = mMovies.get(adapterPosition);
-            mClickHandler.onClick(movie);
+            Trailer trailer = mTrailers.get(adapterPosition);
+            mClickHandler.onClick(trailer);
         }
     }
 
-    public MovieAdapter(@NonNull Context context, MovieAdapterOnClickHandler clickHandler) {
+    public TrailersAdapter(@NonNull Context context, TrailersAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
-        mMovies = new ArrayList<>();
+        mTrailers = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.movie_list_item, viewGroup, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.trailer_list_item, viewGroup, false);
         view.setFocusable(true);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Movie movie = mMovies.get(position);
+    public void onBindViewHolder(@NonNull TrailersAdapter.ViewHolder holder, int position) {
+        Trailer trailer = mTrailers.get(position);
 
-        Picasso.with(mContext).load(mContext.getString(R.string.POSTER_BASE_URI) + movie.getPosterPath()).into(holder.imageView);
+        holder.mTrailerNameTextView.setText(trailer.getName());
     }
-
 
     @Override
     public int getItemCount() {
-        return mMovies.size();
+        return mTrailers.size();
     }
 
-    void updateMovies(List<Movie> movies) {
-        mMovies.clear();
-        mMovies.addAll(movies);
+    void updateTrailers(List<Trailer> trailers) {
+        mTrailers.clear();
+        mTrailers.addAll(trailers);
         notifyDataSetChanged();
     }
 }

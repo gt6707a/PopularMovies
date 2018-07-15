@@ -1,6 +1,6 @@
 package com.android.gt6707a.popularmovies.utilities;
 
-import com.android.gt6707a.popularmovies.Movie;
+import com.android.gt6707a.popularmovies.entities.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +29,7 @@ public final class MovieDbJsonUtils {
 
         for (int i = 0; i < results.length(); i++) {
             JSONObject movieJson = results.getJSONObject(i);
-            long id = movieJson.getLong(ID);
+            int id = movieJson.getInt(ID);
             long voteCount = movieJson.getLong(VOTE_COUNT);
             String title = movieJson.getString(TITLE);
             String posterPath = movieJson.getString(POSTER_PATH);

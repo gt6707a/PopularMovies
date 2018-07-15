@@ -15,7 +15,6 @@
  */
 package com.android.gt6707a.popularmovies.utilities;
 
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
