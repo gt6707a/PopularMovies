@@ -3,20 +3,23 @@
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingVertical="2dp"
+    android:layout_marginVertical="2dp">
 
     <ImageView
         android:id="@+id/iv_play"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
         android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        android:layout_marginStart="8dp"
         app:srcCompat="@android:drawable/ic_media_play" />
 
     <TextView
         android:id="@+id/tv_trailer_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:gravity="center_vertical"/>
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp" />
 </LinearLayout>
