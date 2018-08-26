@@ -6,4 +6,5 @@
     <string name="TOP_RATED_MOVIES_URI">https://api.themoviedb.org/3/movie/top_rated</string>
     <string name="POSTER_BASE_URI">http://image.tmdb.org/t/p/w500/</string>
     <string name="MOVIE_VIDEOS_URL">https://api.themoviedb.org/3/movie/%s/videos</string>
+    <string name="MOVIE_REVIEWS_URL">https://api.themoviedb.org/3/movie/%s/reviews</string>
 </resources>
