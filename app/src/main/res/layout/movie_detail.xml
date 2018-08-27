@@ -71,6 +71,14 @@
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/tv_releaseDate" />
 
+            <Button
+                android:id="@+id/b_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/guideline"
+                app:layout_constraintTop_toBottomOf="@id/tv_voteAverage"
+                android:text="MARK AS FAVORITE" />
+
             <TextView
                 android:id="@+id/tv_overview"
                 android:layout_width="match_parent"

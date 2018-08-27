@@ -1,18 +1,23 @@
 package com.android.gt6707a.popularmovies;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.gt6707a.popularmovies.database.AppDatabase;
 import com.android.gt6707a.popularmovies.entities.Movie;
 import com.android.gt6707a.popularmovies.entities.Review;
 import com.android.gt6707a.popularmovies.entities.Trailer;
@@ -29,15 +34,20 @@ public class DetailActivity extends AppCompatActivity
     implements TrailersAdapter.TrailersAdapterOnClickHandler
     , ReviewsAdapter.ReviewsAdapterOnClickHandler {
 
+    private Movie mMovie;
     private TextView mTitleTextView;
     private ImageView mPosterImageView;
     private TextView mReleaseDateTextView;
     private TextView mVoteAverageTextView;
     private TextView mOverviewTextView;
+    private Button mFavorite;
     private ProgressBar mProgressBar;
+    private boolean isSaved;
 
     private TrailersAdapter mTrailersAdapter;
     private ReviewsAdapter mReviewsAdapter;
+
+    private AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +59,18 @@ public class DetailActivity extends AppCompatActivity
         mReleaseDateTextView = findViewById(R.id.tv_releaseDate);
         mVoteAverageTextView = findViewById(R.id.tv_voteAverage);
         mOverviewTextView = findViewById(R.id.tv_overview);
+        mFavorite = findViewById(R.id.b_favorite);
         mProgressBar = findViewById(R.id.pb_loading_indicator);
         mTrailersAdapter = new TrailersAdapter(this, this);
         mReviewsAdapter = new ReviewsAdapter(this, this);
+        mDb = AppDatabase.getInstance(getApplicationContext());
+
+        mFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFavoriteClicked();
+            }
+        });
 
         LinearLayoutManager trailersLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -76,6 +95,7 @@ public class DetailActivity extends AppCompatActivity
     }
 
     private void updateUI(Movie movie) {
+        mMovie = movie;
         mTitleTextView.setText(movie.getTitle());
         mReleaseDateTextView.setText(movie.getReleaseYear());
         mVoteAverageTextView.setText(String.format(Locale.getDefault(), "%1$.1f/10", movie.getVoteAverage()));
@@ -88,6 +108,27 @@ public class DetailActivity extends AppCompatActivity
 
         QueryMovieReviewsTask queryMovieReviewsTask = new QueryMovieReviewsTask(this);
         queryMovieReviewsTask.execute(movie.getId());
+
+        mDb.movieDao().loadById(mMovie.getId()).observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie movie) {
+                isSaved = movie != null;
+                mFavorite.setText(isSaved ? "UNMARK AS FAVORITE" : "MARK AS FAVORITE");
+            }
+        });
+    }
+
+    private void onFavoriteClicked() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (isSaved) {
+                    mDb.movieDao().delete(mMovie);
+                } else {
+                    mDb.movieDao().insert(mMovie);
+                }
+            }
+        });
     }
 
     @Override

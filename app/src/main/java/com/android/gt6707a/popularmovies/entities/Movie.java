@@ -1,16 +1,34 @@
 package com.android.gt6707a.popularmovies.entities;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.io.Serializable;
 
+@Entity
 public class Movie implements Serializable{
+    @PrimaryKey
     private int id;
     private long voteCount;
-    private boolean video;
     private String title;
     private String posterPath;
     private String overview;
     private double voteAverage;
     private String releaseDate;
+
+    @Ignore
+    public Movie() {}
+
+    public Movie(int id, long voteCount, String title, String posterPath, String overview, double voteAverage, String releaseDate) {
+        this.id = id;
+        this.voteCount = voteCount;
+        this.title = title;
+        this.posterPath = posterPath;
+        this.overview = overview;
+        this.voteAverage = voteAverage;
+        this.releaseDate = releaseDate;
+    }
 
     public int getId() {
         return id;
@@ -59,7 +77,6 @@ public class Movie implements Serializable{
     public String getReleaseDate() {
         return releaseDate;
     }
-
     public Movie setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
         return this;
