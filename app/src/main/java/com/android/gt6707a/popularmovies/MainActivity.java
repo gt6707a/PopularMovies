@@ -23,11 +23,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
     MovieAdapter.MovieAdapterOnClickHandler {
+    private static final String STATE_QUERY_OPTION = "queryOption";
+
     private MoviesViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private ProgressBar mLoadingIndicator;
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessage;
+    private MoviesViewModel.QueryOptions queryOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
                 mMovieAdapter.updateMovies(movies);
-                showLoading(false);
             }
         });
 
@@ -62,8 +64,26 @@ public class MainActivity extends AppCompatActivity implements
                 showLoading(isBusy);
             }
         });
+    }
 
-        mViewModel.fetch(MoviesViewModel.QueryOptions.TopRated);
+    private void fetch() {
+        if (queryOption == MoviesViewModel.QueryOptions.Favorites) {
+            mViewModel.getFavorites().observe(this, new Observer<List<Movie>>() {
+                @Override
+                public void onChanged(@Nullable List<Movie> movies) {
+                    mMovieAdapter.updateMovies(movies);
+                }
+            });
+        } else {
+            mViewModel.getFavorites().removeObservers(this);
+            mViewModel.fetch(queryOption);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetch();
     }
 
     @Override
@@ -89,23 +109,28 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int sortId = item.getItemId();
         if (sortId == R.id.sort_popular) {
-            mViewModel.getFavorites().removeObservers(this);
-            showLoading(true);
-            mViewModel.fetch(MoviesViewModel.QueryOptions.MostPopular);
+            queryOption = MoviesViewModel.QueryOptions.MostPopular;
         } else if (sortId == R.id.sort_top_rated) {
-            mViewModel.getFavorites().removeObservers(this);
-            showLoading(true);
-            mViewModel.fetch(MoviesViewModel.QueryOptions.TopRated);
+            queryOption = MoviesViewModel.QueryOptions.TopRated;
         } else {
-            mViewModel.getFavorites().observe(this, new Observer<List<Movie>>() {
-                @Override
-                public void onChanged(@Nullable List<Movie> movies) {
-                    mMovieAdapter.updateMovies(movies);
-                }
-            });
+            queryOption = MoviesViewModel.QueryOptions.Favorites;
         }
 
+        fetch();
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(STATE_QUERY_OPTION, queryOption);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        queryOption = (MoviesViewModel.QueryOptions)savedInstanceState.getSerializable(STATE_QUERY_OPTION);
     }
 
     private void showLoading(boolean isLoading) {

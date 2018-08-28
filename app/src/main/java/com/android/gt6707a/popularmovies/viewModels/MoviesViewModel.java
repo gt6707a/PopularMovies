@@ -16,6 +16,9 @@ import java.util.List;
 
 public class MoviesViewModel extends AndroidViewModel {
 
+    private static final String POPULAR_MOVIES_API = "https://api.themoviedb.org/3/movie/popular";
+    private static final String TOP_RATED_MOVIES_API = "https://api.themoviedb.org/3/movie/top_rated";
+
     private final MutableLiveData<Boolean> isBusy;
     public LiveData<Boolean> getIsBusy() {
         return isBusy;
@@ -62,8 +65,8 @@ public class MoviesViewModel extends AndroidViewModel {
 
     private String query(QueryOptions queryOption) {
         String uri = queryOption == QueryOptions.MostPopular ?
-                "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc" :
-                "https://api.themoviedb.org/3/movie/top_rated";
+                POPULAR_MOVIES_API :
+                TOP_RATED_MOVIES_API;
 
         try {
             URL url = NetworkUtils.getUrl(uri);
