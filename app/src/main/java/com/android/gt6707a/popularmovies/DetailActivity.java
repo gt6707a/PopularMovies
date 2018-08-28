@@ -1,6 +1,5 @@
 package com.android.gt6707a.popularmovies;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,13 +25,13 @@ import com.android.gt6707a.popularmovies.utilities.ReviewJsonUtils;
 import com.android.gt6707a.popularmovies.utilities.TrailerJsonUtils;
 import com.squareup.picasso.Picasso;
 
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity
-    implements TrailersAdapter.TrailersAdapterOnClickHandler
-    , ReviewsAdapter.ReviewsAdapterOnClickHandler {
+    implements TrailersAdapter.TrailersAdapterOnClickHandler {
 
     private Movie mMovie;
     private TextView mTitleTextView;
@@ -62,7 +61,7 @@ public class DetailActivity extends AppCompatActivity
         mFavorite = findViewById(R.id.b_favorite);
         mProgressBar = findViewById(R.id.pb_loading_indicator);
         mTrailersAdapter = new TrailersAdapter(this, this);
-        mReviewsAdapter = new ReviewsAdapter(this, this);
+        mReviewsAdapter = new ReviewsAdapter(this);
         mDb = AppDatabase.getInstance(getApplicationContext());
 
         mFavorite.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +112,7 @@ public class DetailActivity extends AppCompatActivity
             @Override
             public void onChanged(@Nullable Movie movie) {
                 isSaved = movie != null;
-                mFavorite.setText(isSaved ? "UNMARK AS FAVORITE" : "MARK AS FAVORITE");
+                mFavorite.setText(isSaved ? "REMOVE AS\nFAVORITE" : "MARK AS\nFAVORITE");
             }
         });
     }
@@ -140,27 +139,22 @@ public class DetailActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onClick(Review review) {
-
-    }
-
     private void showLoading(boolean isLoading) {
         mProgressBar.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
     }
 
     private static class QueryMovieTrailersTask extends AsyncTask<Integer, Void, String> {
         private final String mMovieVideosUrl;
-        private final DetailActivity mActivity;
+        private final WeakReference<DetailActivity> mActivityRef;
 
-        public QueryMovieTrailersTask(@NonNull DetailActivity activity) {
-            mActivity = activity;
+        QueryMovieTrailersTask(@NonNull DetailActivity activity) {
+            mActivityRef = new WeakReference<>(activity);
             mMovieVideosUrl = activity.getString(R.string.MOVIE_VIDEOS_URL);
         }
 
         @Override
         protected void onPreExecute() {
-            mActivity.showLoading(true);
+            mActivityRef.get().showLoading(true);
         }
 
         @Override
@@ -173,13 +167,11 @@ public class DetailActivity extends AppCompatActivity
             if (!response.isEmpty()) {
                 try {
                     List<Trailer> trailers = TrailerJsonUtils.toTrailers(response);
-                    mActivity.mTrailersAdapter.updateTrailers(trailers);
+                    mActivityRef.get().mTrailersAdapter.updateTrailers(trailers);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                mActivity.showLoading(false);
-            } else {
-                //mActivity.get().showError();
+                mActivityRef.get().showLoading(false);
             }
         }
 
@@ -199,16 +191,16 @@ public class DetailActivity extends AppCompatActivity
 
     private static class QueryMovieReviewsTask extends AsyncTask<Integer, Void, String> {
         private final String mMovieReviewsUrl;
-        private final DetailActivity mActivity;
+        private final WeakReference<DetailActivity> mActivityRef;
 
-        public QueryMovieReviewsTask(@NonNull DetailActivity activity) {
-            mActivity = activity;
+        QueryMovieReviewsTask(@NonNull DetailActivity activity) {
+            mActivityRef = new WeakReference<>(activity);
             mMovieReviewsUrl = activity.getString(R.string.MOVIE_REVIEWS_URL);
         }
 
         @Override
         protected void onPreExecute() {
-            mActivity.showLoading(true);
+            mActivityRef.get().showLoading(true);
         }
 
         @Override
@@ -221,13 +213,11 @@ public class DetailActivity extends AppCompatActivity
             if (!response.isEmpty()) {
                 try {
                     List<Review> reviews = ReviewJsonUtils.toReviews(response);
-                    mActivity.mReviewsAdapter.updateReviews(reviews);
+                    mActivityRef.get().mReviewsAdapter.updateReviews(reviews);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                mActivity.showLoading(false);
-            } else {
-                //mActivity.get().showError();
+                mActivityRef.get().showLoading(false);
             }
         }
 

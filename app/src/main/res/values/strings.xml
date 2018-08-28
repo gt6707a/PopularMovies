@@ -2,7 +2,6 @@
     <string name="app_name">Popular Movies</string>
     <string name="sort_popular">Most Popular</string>
     <string name="sort_top_rated">Top Rated</string>
-    <string name="refresh">Refresh</string>
     <string name="error_message">Network not available. Please verify connectivity and try again.</string>
     <string name="trailers">Trailers:</string>
     <string name="reviews">Reviews:</string>

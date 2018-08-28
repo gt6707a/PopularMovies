@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.gt6707a.popularmovies.entities.Review;
-import com.android.gt6707a.popularmovies.entities.Trailer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,22 +36,12 @@ class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
     private final List<Review> mReviews;
     private final Context mContext;
 
-    final private ReviewsAdapterOnClickHandler mClickHandler;
-
-    /**
-     * The interface that receives onClick messages.
-     */
-    public interface ReviewsAdapterOnClickHandler {
-        void onClick(Review review);
-    }
-
     /**
      * A ViewHolder is a required part of the pattern for RecyclerViews. It mostly behaves as
      * a cache of the child views for an item. It's also a convenient place to set an
      * OnClickListener, since it has access to the adapter and the views.
      */
-    class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         final TextView mAuthorTextView;
         final TextView mContentTextView;
@@ -61,27 +50,11 @@ class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
             super(view);
             mAuthorTextView = view.findViewById(R.id.tv_author);
             mContentTextView = view.findViewById(R.id.tv_content);
-            view.setOnClickListener(this);
-        }
-
-        /**
-         * This gets called by the child views during a click. We fetch the date that has been
-         * selected, and then call the onClick handler registered with this adapter, passing that
-         * date.
-         *
-         * @param v the View that was clicked
-         */
-        @Override
-        public void onClick(View v) {
-            int adapterPosition = getAdapterPosition();
-            Review review = mReviews.get(adapterPosition);
-            mClickHandler.onClick(review);
         }
     }
 
-    public ReviewsAdapter(@NonNull Context context, ReviewsAdapterOnClickHandler clickHandler) {
+    public ReviewsAdapter(@NonNull Context context) {
         mContext = context;
-        mClickHandler = clickHandler;
         mReviews = new ArrayList<>();
     }
 

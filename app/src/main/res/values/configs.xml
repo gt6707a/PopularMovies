@@ -2,8 +2,6 @@
 <resources>
     <integer name="NUMBER_OF_COLUMNS">2</integer>
     <!-- base uri can be abstracted if we need to build URIs in more dynamic way -->
-    <string name="MOST_POPULAR_MOVIES_URI">https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc</string>
-    <string name="TOP_RATED_MOVIES_URI">https://api.themoviedb.org/3/movie/top_rated</string>
     <string name="POSTER_BASE_URI">http://image.tmdb.org/t/p/w500/</string>
     <string name="MOVIE_VIDEOS_URL">https://api.themoviedb.org/3/movie/%s/videos</string>
     <string name="MOVIE_REVIEWS_URL">https://api.themoviedb.org/3/movie/%s/reviews</string>

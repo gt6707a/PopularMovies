@@ -4,19 +4,19 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="2dp"
-    android:layout_marginVertical="2dp">
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginBottom="2dp">
 
     <TextView
         android:id="@+id/tv_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="TextView" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

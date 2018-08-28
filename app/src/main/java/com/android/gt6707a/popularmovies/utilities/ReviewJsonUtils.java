@@ -1,7 +1,6 @@
 package com.android.gt6707a.popularmovies.utilities;
 
 import com.android.gt6707a.popularmovies.entities.Review;
-import com.android.gt6707a.popularmovies.entities.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;

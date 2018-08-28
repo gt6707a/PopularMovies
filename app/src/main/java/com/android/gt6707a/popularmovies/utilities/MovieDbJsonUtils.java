@@ -12,7 +12,6 @@ import java.util.List;
 public final class MovieDbJsonUtils {
     private final static String VOTE_COUNT = "vote_count";
     private final static String ID = "id";
-    private final static String VIDEO = "video";
     private final static String VOTE_AVERAGE = "vote_average";
     private final static String TITLE = "title";
     private final static String POSTER_PATH = "poster_path";
